@@ -39,14 +39,18 @@ module EventSourcery
       end
 
       module InstanceMethods
-        def initialize(tracker: EventSourcery.config.event_tracker, db_connection: EventSourcery.config.projections_database, event_source: EventSourcery.config.event_source, event_sink: EventSourcery.config.event_sink)
+        def initialize(
+              tracker:       EventSourcery.config.event_tracker,
+              db_connection: EventSourcery.config.projections_database,
+              event_sink:    EventSourcery.config.event_sink,
+              event_source:  nil
+            )
           @tracker = tracker
-          @event_source = event_source
           @event_sink = event_sink
           @db_connection = db_connection
           if self.class.emits_events?
-            if event_sink.nil? || event_source.nil?
-              raise ArgumentError, 'An event sink and source is required for processors that emit events'
+            if event_sink.nil?
+              raise ArgumentError, 'An event sink is required for processors that emit events'
             end
           end
         end
@@ -56,7 +60,7 @@ module EventSourcery
 
       private
 
-      attr_reader :event_sink, :event_source
+      attr_reader :event_sink
 
       def emit_event(event_or_hash, &block)
         event = if Event === event_or_hash

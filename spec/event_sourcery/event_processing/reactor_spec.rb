@@ -60,10 +60,6 @@ RSpec.describe EventSourcery::EventProcessing::Reactor do
       expect(reactor.instance_variable_get('@tracker')).to eq event_tracker
     end
 
-    it 'uses the configured event source by default' do
-      expect(reactor.instance_variable_get('@event_source')).to eq event_source
-    end
-
     it 'uses the configured event sink by default' do
       expect(reactor.instance_variable_get('@event_sink')).to eq event_sink
     end
