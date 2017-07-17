@@ -61,6 +61,15 @@ module EventSourcery
         events.select { |event| event.id >= id }.first(limit)
       end
 
+      # Get the event for a given uuid.
+      #
+      # @param uuid the uuid of event
+      #
+      # @return Event object if event with uuid is found, or Nil if event with uuid is not found
+      def get_event_by_uuid(uuid)
+        @events.find { |e| e.uuid == uuid }
+      end
+
       # Retrieve the latest event ID
       #
       # @param event_types [Array] Optional. If supplied, only retrieve events of given type(s).

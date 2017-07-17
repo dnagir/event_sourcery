@@ -1,5 +1,6 @@
 RSpec.shared_examples 'an event store' do
   let(:aggregate_id) { SecureRandom.uuid }
+  let(:event_uuid) { SecureRandom.uuid }
 
   def new_event(aggregate_id: SecureRandom.uuid, type: 'test_event', body: {},
                 id: nil, version: 1, created_at: nil, uuid: SecureRandom.uuid,
@@ -125,6 +126,27 @@ RSpec.shared_examples 'an event store' do
       expect {
         event_store.sink([new_event(aggregate_id: aggregate_id), new_event(aggregate_id: SecureRandom.uuid)])
       }.to raise_error(EventSourcery::AtomicWriteToMultipleAggregatesNotSupported)
+    end
+  end
+
+  describe '#get_event_by_uuid' do
+    context 'when event with given uuid exists' do
+      before do
+        event_store.sink(new_event(uuid: event_uuid))
+      end
+
+      it 'returns event object with given uuid' do
+        event = event_store.get_event_by_uuid(event_uuid)
+        expect(event).to be_instance_of EventSourcery::Event
+        expect(event.uuid).to eq event_uuid
+      end
+    end
+
+    context 'when event with given uuid does not exist' do
+      it 'returns nil' do
+        event = event_store.get_event_by_uuid(event_uuid)
+        expect(event).to be_nil
+      end
     end
   end
 
