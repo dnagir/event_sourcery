@@ -9,6 +9,7 @@ RSpec.describe EventSourcery::EventStore::EventSource do
       get_next_from
       latest_event_id
       get_events_for_aggregate_id
+      get_event_by_uuid
       each_by_range
     ].each do |method|
       it "delegates ##{method} to the adapter" do

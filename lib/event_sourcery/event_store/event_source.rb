@@ -8,6 +8,7 @@ module EventSourcery
       extend Forwardable
       def_delegators :event_store,
                      :get_next_from,
+                     :get_event_by_uuid,
                      :latest_event_id,
                      :get_events_for_aggregate_id,
                      :each_by_range,
