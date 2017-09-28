@@ -43,11 +43,11 @@ module EventSourcery
     # Save any new events/changes in the provided aggregate to the event sink
     #
     # @param aggregate An aggregate instance to be saved
-    def save(aggregate)
+    def save(aggregate, optimistic_locking: true)
       new_events = aggregate.changes
+      expected_version = optimistic_locking ? aggregate.version - new_events.count : nil
       if new_events.any?
-        event_sink.sink(new_events,
-                        expected_version: aggregate.version - new_events.count)
+        event_sink.sink(new_events, expected_version: expected_version)
       end
       aggregate.clear_changes
     end

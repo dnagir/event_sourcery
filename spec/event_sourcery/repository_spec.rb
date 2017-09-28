@@ -61,6 +61,13 @@ RSpec.describe EventSourcery::Repository do
         repository.save(aggregate)
         expect(event_sink).to have_received(:sink).with(changes, expected_version: version - changes.count)
       end
+
+      context 'when save without optimistic locking' do
+        it 'saves the new events with nil expected version' do
+          repository.save(aggregate, optimistic_locking: false)
+          expect(event_sink).to have_received(:sink).with(changes, expected_version: nil)
+        end
+      end
     end
 
     context 'with multiple changes' do
